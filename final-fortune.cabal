@@ -1,0 +1,71 @@
+name:                final-fortune
+version:             0.1.0.0
+-- synopsis:
+-- description:
+homepage:            https://github.com/mmachenry/final-fortune#readme
+license:             BSD3
+license-file:        LICENSE
+author:              Mike MacHenry
+maintainer:          mike.machenry@gmail.com
+copyright:           2017 Mike MacHenry
+category:            Game
+build-type:          Simple
+extra-source-files:  README.md
+cabal-version:       >=1.10
+
+library
+  hs-source-dirs:      src
+  exposed-modules:     Deck
+                     , DynamicSearch
+                     , CardDB
+                     , GameState
+                     , MagicEffects
+                     , Mana
+  build-depends:       base >= 4.7 && < 5
+                     , containers
+                     , MissingH
+                     , MonadRandom
+                     , mtl
+                     , multiset
+                     , random
+                     , random-shuffle
+  default-language:    Haskell2010
+
+executable testdraw
+  hs-source-dirs:      app
+  main-is:             TestDraw.hs
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  build-depends:       base
+                     , final-fortune
+                     , random-shuffle
+  default-language:    Haskell2010
+
+executable numberofwins
+  hs-source-dirs:      app
+  main-is:             NumberOfWins.hs
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  build-depends:       base
+                     , final-fortune
+  default-language:    Haskell2010
+
+executable replay
+  hs-source-dirs:      app
+  main-is:             Replay.hs
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  build-depends:       base
+                     , final-fortune
+                     , containers
+  default-language:    Haskell2010
+
+test-suite final-fortune-test
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      test
+  main-is:             Spec.hs
+  build-depends:       base
+                     , final-fortune
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  default-language:    Haskell2010
+
+source-repository head
+  type:     git
+  location: https://github.com/mmachenry/final-fortune
