@@ -75,7 +75,7 @@ convertedManaCost mana =
     + (anyColor mana)
 
 colors :: Mana -> [Color]
-colors mana = undefined
+colors _mana = undefined
 
 emptyManaPool :: Mana
 emptyManaPool = Mana 0 0 0 0 0 0 0

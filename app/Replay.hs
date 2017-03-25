@@ -1,11 +1,12 @@
 module Main where
 
 import qualified Data.Set as Set
-import GameState
-import CardDB
-import Deck (Deck, readDeck)
 import DynamicSearch (bfs)
 import System.Environment (getArgs)
+import CardDB
+import GameState
+import MagicEffects
+import Deck (Deck, readDeck)
 
 main = do
     [filename, gameid] <- getArgs

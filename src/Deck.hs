@@ -40,4 +40,4 @@ readCardCount :: String -> CardCount
 readCardCount str =
   case readsPrec 0 str of
     [(n,name)] -> (n,strip name)
-    [] -> (0,"")
+    _ -> (0,"")

@@ -6,7 +6,8 @@ import Data.Maybe (mapMaybe)
 import GameState
 import Deck
 import CardDB
-import Debug.Trace (trace)
+import MagicEffects -- might move nextStates into another module to avoid this import
+import Debug
 
 -- The number of wins that can be found for a given deck and a given number of
 -- trials. The trails are randomized with a deterministic seed so that the the
@@ -29,14 +30,14 @@ winningState deck seed =
 -- and potentially use a library that already exists.
 bestFirstSearch :: Int -> Set GameState -> Set GameState -> Maybe GameState
 bestFirstSearch 0 _ _ = Nothing
-bestFirstSearch depth seen states = -- trace (show (map (length.hand) (Set.toList states))) $
+bestFirstSearch depth seen states =
   if Set.null states
   then Nothing
   else let best = Set.findMax states
            rest = Set.deleteMax states
        in if Set.member best seen
           then bestFirstSearch (depth-1) seen rest
-          else if isWin best
+          else if isWin (gameStateGame best)
                then Just best
                else let ss = Set.fromList (nextStates best)
                     in bestFirstSearch (depth-1)
@@ -45,19 +46,20 @@ bestFirstSearch depth seen states = -- trace (show (map (length.hand) (Set.toLis
 
 bfs :: Set.Set GameState -> IO (Maybe GameState)
 bfs states = do
-  print $ map (length . hand) (Set.toList states)
+  print $ map (length . hand . gameStateGame) (Set.toList states)
   if Set.null states
   then return Nothing
   else let best = Set.findMax states
            rest = Set.deleteMax states
-       in do putStrLn $ ppGs best
-             if isWin best
+       in do putStrLn $ ppGs (gameStateGame best)
+             if isWin (gameStateGame best)
              then return (Just best)
              else let ss = Set.fromList (nextStates best)
                   in do print $ length ss
                         str <- getLine
                         if str == "show"
-                          then mapM_ (putStrLn . ppGs) $ best : Set.toList rest
+                          then mapM_ (putStrLn . ppGs . gameStateGame)
+                                     (best : Set.toList rest)
                           else return ()
                         if str == "count" then print $ Set.size rest
                           else return ()

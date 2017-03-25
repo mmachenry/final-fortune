@@ -15,7 +15,8 @@ cabal-version:       >=1.10
 
 library
   hs-source-dirs:      src
-  exposed-modules:     Deck
+  exposed-modules:     Debug
+                     , Deck
                      , DynamicSearch
                      , CardDB
                      , GameState
@@ -29,6 +30,8 @@ library
                      , multiset
                      , random
                      , random-shuffle
+                     , transformers
+  ghc-options:         -Wall -Werror
   default-language:    Haskell2010
 
 executable testdraw
