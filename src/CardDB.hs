@@ -1,9 +1,11 @@
 module CardDB (findCard) where
 
+import qualified Data.MultiSet as MultiSet
 import Data.List (find)
 import Data.Maybe (fromMaybe)
 import Mana
 import GameState
+import Card
 import MagicEffects
 
 findCard :: String -> Card
@@ -17,23 +19,38 @@ cards = [
  , spell Instant "Brain Freeze" "1U" $ stormWin 18
  , spell Instant "Meditate" "2U" $ draw 4
  , spell Instant "Ancestral Recall" "U" $ draw 3
- , artifactMana "Black Lotus" "0" tapSacrifice $ do
-     addToManaPool (read "AAA")
- , spell Instant "Instant Lotus" "0" $ addToManaPool (read "AAA")
+ , artifactMana "Black Lotus" "0" tapSacrifice $ addToManaPool (read "AAA")
+ , artifactMana "Lion's Eye Diamond" "0" 
+     (\this->sacrifice this >> discardHand)
+     (addToManaPool (read "AAA")) 
+ , spell Sorcery "Wheel of Fortune" "2R" $ discardHand >> draw 7
+ -- Currently no facility to record opponent's handsize. It is assumed to stay
+ -- at seven. If cards are added to the pool that can change it, we'll need
+ -- to add a record of the current opponent hand size and reference it here.
+ , spell Sorcery "Windfall" "2U" $ discardHand >> draw 7
+ , spell Sorcery "Timetwister" "2U" $ do
+     shuffleGraveyardHandIntoLibrary
+     draw 7
+ , spell Sorcery "Demonic Tutor" "1B" $ do
+     card <- search library (const True)
+     putIntoHand card
+ , spell Sorcery "Regrowth" "1G" $ do
+     card <- search graveyard (const True)
+     putIntoHand card
+ -- Make sure to reduce the set of possibilities by
+ --   1) Only sacrificing unique permanents and only getting unique cards.
+ --   2) Allowing for a parameterized set of targets to search for.
+ , spell Sorcery "Tinker" "2U" $ do
+     old <- search (MultiSet.toList . battlefield)
+                   (isType Artifact . permanentCard)
+     sacrifice old
+     new <- search library (isType Artifact)
+     putIntoPlay new
+ , spell Instant "Dark Ritual" "B" $ addToManaPool (read "BBB")
+ , spell Instant "Cabal Ritual" "1B" $ do
+     addToManaPool (read "BBB")
+     threshold (addToManaPool (read "B"))
+ , spell Sorcery "Merchant Scroll" "1U" $ do
+     card <- search library (\c->isType Instant c && isColor Blue c)
+     putIntoHand card
  ]
-
--- Create a simple spell that works like an instant or a sorcery
--- with a name, mana cost, and effect from playing.
-spell :: CardType -> String -> String -> Effect -> Card
-spell t name costStr effect =
-  let cost = read costStr
-  in Card name (Mana.colors cost) [] [t] cost effect []
-
-artifactMana :: String -> String -> (Permanent -> Effect) -> Effect -> Card
-artifactMana name costStr cost effect =
-  Card name [] [] [Artifact] (read costStr) doNothing [
-    ActivatedAbility cost effect]
-
---artifactMana :: String -> String -> [Cost] -> String
---artifactMana name manaStr actCost effect =
---  Card name [] [Artifact] cost ...

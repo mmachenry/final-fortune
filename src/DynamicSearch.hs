@@ -57,11 +57,10 @@ bfs states = do
              else let ss = Set.fromList (nextStates best)
                   in do print $ length ss
                         str <- getLine
-                        if str == "show"
-                          then mapM_ (putStrLn . ppGs . gameStateGame)
-                                     (best : Set.toList rest)
-                          else return ()
-                        if str == "count" then print $ Set.size rest
-                          else return ()
-                        if str == "best" then print best else return ()
+                        case str of
+                          "show" -> mapM_ (putStrLn . ppGs . gameStateGame)
+                                          (best : Set.toList rest)
+                          "count" -> print $ Set.size rest
+                          "best" -> print best
+                          _ -> return ()
                         bfs (Set.union ss rest)

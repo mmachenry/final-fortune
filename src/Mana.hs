@@ -8,6 +8,7 @@ module Mana where
 import Data.Char
 
 data Color = White | Blue | Black | Red | Green
+  deriving (Eq)
 
 -- TODO default ordering is not good. it should give an idea of how good this
 -- state is.
@@ -35,25 +36,21 @@ instance Show Mana where
 
 instance Read Mana where
     readsPrec _ str =
-        let (colorlessStr, colorStr) = break (not . isDigit) str
+        let (colorlessStr, colorStr) = span isDigit str
             mana = Mana (length (filter (=='W') colorStr))
                         (length (filter (=='U') colorStr))
                         (length (filter (=='B') colorStr))
                         (length (filter (=='R') colorStr))
                         (length (filter (=='G') colorStr))
-                        (if colorlessStr == "" then 0 else (read colorlessStr))
+                        (if colorlessStr == "" then 0 else read colorlessStr)
                         (length (filter (=='A') colorStr))
         in [(mana,"")]
 
 addMana :: Mana -> Mana -> Mana
 addMana m1 m2 =
-    Mana ((white m1) + (white m2))
-         ((blue m1) + (blue m2))
-         ((black m1) + (black m2))
-         ((red m1) + (red m2))
-         ((green m1) + (green m2))
-         ((colorless m1) + (colorless m2))
-         ((anyColor m1) + (anyColor m2))
+    Mana (white m1 + white m2) (blue m1 + blue m2) (black m1 + black m2)
+         (red m1 + red m2) (green m1 + green m2) (colorless m1 + colorless m2)
+         (anyColor m1 + anyColor m2)
 
 -- TODO this is not really implemented
 payMana :: Mana -> Mana -> Maybe Mana
@@ -66,13 +63,8 @@ payMana cost pool =
 
 convertedManaCost :: Mana -> Int
 convertedManaCost mana =
-      (white mana)
-    + (blue mana)
-    + (black mana)
-    + (red mana)
-    + (green mana)
-    + (colorless mana)
-    + (anyColor mana)
+      white mana + blue mana + black mana + red mana + green mana
+    + colorless mana + anyColor mana
 
 colors :: Mana -> [Color]
 colors _mana = undefined

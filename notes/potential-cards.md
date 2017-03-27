@@ -62,7 +62,6 @@ Draw (black)
 * Yawgmoth's Bargain
 * Pain's Reward
 * Cruel Bargain
-* Dream Salvage
 * Promise of Power
 * Reproccess
 * Dredge
@@ -73,6 +72,7 @@ Other draw
 * Ancient Stirrings
 * Bazaar of Baghdad
 * Diabolic Vision
+* Dream Salvage
 * Lich's Mirror
 
 Spin
@@ -100,12 +100,13 @@ Tutor (battlefield)
 * Transmute Artifact
 * Tezzeret the Seeker
 * Crop Rotation
-* Fabricate
 * Whir of Invention
+* Reshape
 
 Tutor (hand)
 ----
 * Demonic Tutor
+* Fabricate
 * Dark Petition
 * Demonic Consultation
 * Grim Tutor
@@ -121,7 +122,6 @@ Tutor (hand)
 * Living Wish
 * Infernal Tutor
 * Tainted Pact
-* Reshape
 
 Tutor (top deck)
 ----
@@ -140,7 +140,6 @@ Card tricks
 * Fact or Fiction
 * Truth or Tale
 * Mind's Desire
-* Eureka
 * Howltooth Hollow
 
 Mana (land)
@@ -170,8 +169,6 @@ Mana (artifact)
 * Mana Vault
 * Grim Monolith
 * Candelabra of Tawnos
-* Paradox Engine
-* Helm of Awakening
 
 Mana (other)
 ----
@@ -191,9 +188,20 @@ Mana (other)
 
 Avoiding casting costs
 ----
+* Eureka
 * Show and Tell
 * Dream Halls
 * Omniscience
+
+Reducing casting costs
+----
+* Helm of Awakening
+* Cloud Key
+* Semblance Anvil
+
+Untapping
+----
+* Paradox Engine
  
 Win Condition
 ----

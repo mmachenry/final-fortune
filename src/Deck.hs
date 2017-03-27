@@ -38,6 +38,6 @@ expandDeck = concatMap (uncurry replicate)
 -- generally a bit more robust.
 readCardCount :: String -> CardCount
 readCardCount str =
-  case readsPrec 0 str of
+  case reads str of
     [(n,name)] -> (n,strip name)
     _ -> (0,"")

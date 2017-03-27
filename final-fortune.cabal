@@ -15,10 +15,11 @@ cabal-version:       >=1.10
 
 library
   hs-source-dirs:      src
-  exposed-modules:     Debug
+  exposed-modules:     Card
+                     , CardDB
+                     , Debug
                      , Deck
                      , DynamicSearch
-                     , CardDB
                      , GameState
                      , MagicEffects
                      , Mana
