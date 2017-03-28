@@ -68,12 +68,17 @@ shuffleGraveyardHandIntoLibrary = do
 -- Diamond.
 playCard :: Card -> Effect
 playCard card = do
-  payCost (cardCost card)
-  modify $ \g->g {
-    hand = MultiSet.delete card (hand g),
-    stack = card : stack g,
-    storm = storm g + 1 }
-  resolveStack
+  if isType Land card
+  then do hasPlayedLand <- fmap playedLand get
+          guard $ not hasPlayedLand
+          modify (\g->g { hand = MultiSet.delete card (hand g) })
+          putIntoPlay card
+  else do payCost (cardCost card)
+          modify $ \g->g {
+            hand = MultiSet.delete card (hand g),
+            stack = card : stack g,
+            storm = storm g + 1 }
+          resolveStack
 
 -- TODO: This will fail to call the effect of a permanent. That's bad but
 -- should they be called? Should they even have effects? Perhaps there should
