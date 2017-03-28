@@ -7,6 +7,7 @@ import Data.List (intercalate)
 ppGs :: Game -> String
 ppGs g =
   "Game:" ++
+  "\n storm: " ++ show (storm g) ++
   "\n library(" ++ show (length (library g)) ++ "): " ++
                    intercalate ";" (map cardName (take 3 (library g))) ++
   "\n  hand" ++ cl (MultiSet.toList (hand g)) ++

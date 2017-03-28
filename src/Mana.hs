@@ -6,6 +6,7 @@
 module Mana where
 
 import Data.Char
+import Data.Maybe (catMaybes)
 
 data Color = White | Blue | Black | Red | Green
   deriving (Eq)
@@ -34,6 +35,13 @@ instance Show Mana where
         ++ replicate (green mana) 'G'
 -}
 
+-- TODO fix: make not and instance, but create a String -> Mana function
+-- symbols that must be read:
+-- WUBRG, the colors
+-- numbers, representing the amount of mana of any type
+-- C, specifically colorless mana
+-- (u/p), phyrexian mana (can be paid with 2 life or the color)
+-- (r/g), multicolored mana (can be paid with either color)
 instance Read Mana where
     readsPrec _ str =
         let (colorlessStr, colorStr) = span isDigit str
@@ -66,8 +74,15 @@ convertedManaCost mana =
       white mana + blue mana + black mana + red mana + green mana
     + colorless mana + anyColor mana
 
+-- TODO code smell
 colors :: Mana -> [Color]
-colors _mana = undefined
+colors mana = catMaybes [
+  if white mana > 0 then Just White else Nothing,
+  if blue mana > 0 then Just Blue else Nothing,
+  if black mana > 0 then Just Black else Nothing,
+  if red mana > 0 then Just Red else Nothing,
+  if green mana > 0 then Just Green else Nothing
+  ]
 
 emptyManaPool :: Mana
 emptyManaPool = Mana 0 0 0 0 0 0 0

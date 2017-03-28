@@ -175,16 +175,22 @@ Mana (other)
 * Channel
 * Simian Spirit Guide
 * Elvish Spirit Guide
-* Dark Ritual
-* Cabal Ritual
-* Inner Fire
-* Pyretic Ritual
-* Rite of Flame
-* Seething Song
 * Tinder Wall
 * Fastbond
 * Cadaverous Bloom
+
+Mana (black fast mana)
+* Dark Ritual
+* Cabal Ritual
 * Skirge Familiar
+
+Mana (red fast mana)
+* Inner Fire
+* Pyretic Ritual
+* Desperate Ritual
+* Rite of Flame
+* Seething Song
+* Treasonous Ogre
 
 Avoiding casting costs
 ----
@@ -203,15 +209,24 @@ Untapping
 ----
 * Paradox Engine
  
-Win Condition
+Storm Win Condition
 ----
 * Tendrils of Agony
 * Brain Freeze
 * Grapeshot
+* Empty the Warrens
+* Aetherflux Reservoir
+
+Combo Win Condition
+----
 * Time Vault; Voltaic Key; Tezzeret the Seeker
+* Painter's Servant; Grind Stone
+* Helm of Obedience; Leyline of the Void
+
+Other Win Condition
+----
 * Laboratory Maniac
 * Goblin Charbelcher
-* Aetherflux Reservoir
 
 Mana fixing
 ----

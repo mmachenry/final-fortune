@@ -13,6 +13,11 @@ import Data.MultiSet (MultiSet)
 import qualified Data.MultiSet as MultiSet
 import Mana
 
+startingLife, startingHandSize, minimumDeckSize :: Int
+startingLife = 20
+startingHandSize = 7
+minimumDeckSize = 60
+
 data GameState = GameState {
   gameStateGame :: Game,
   gameStateGen :: StdGen,
@@ -40,6 +45,7 @@ runEffect (GameState game stdGen history) (EffectM effect) =
          result
 
 data Game = Game {
+  opponent :: Opponent,
   life :: Int,
   manaPool :: Mana,
   storm :: Int,
@@ -51,19 +57,14 @@ data Game = Game {
   library :: [Card],
   playedLand :: Bool,
   isWin :: Bool
-  } deriving (Show)
+  } deriving (Show, Eq)
 
-instance Eq Game where
-  a == b = life a == life b
-           && manaPool a == manaPool b
-           && storm a == storm b
-           && hand a == hand b
-           && stack a == stack b
-           && graveyard a == graveyard b
-           && exiled a == exiled b
-           && battlefield a == battlefield b
-           && library a == library b
-           && playedLand a == playedLand b
+data Opponent = Opponent {
+  opponentLife :: Int,
+  opponentCardsInHand :: Int,
+  opponentCardsInLibrary :: Int,
+  opponentCardsInGraveyard :: Int
+  } deriving (Show, Eq)
 
 -- TODO this is a total punt on ordering
 instance Ord Game where
@@ -89,7 +90,8 @@ breakTie lhs rhs = if lhs == EQ then rhs else lhs
 
 initGame :: [Card] -> Game
 initGame cards = Game {
-  life = 20,
+  opponent = initOpponent,
+  life = startingLife,
   manaPool = emptyManaPool,
   storm = 0,
   hand = MultiSet.empty,
@@ -100,6 +102,14 @@ initGame cards = Game {
   library = cards,
   playedLand = False,
   isWin = False
+  }
+
+initOpponent :: Opponent
+initOpponent = Opponent {
+  opponentLife = startingLife,
+  opponentCardsInHand = startingHandSize,
+  opponentCardsInLibrary = minimumDeckSize - startingHandSize,
+  opponentCardsInGraveyard = 0
   }
 
 data CardType =

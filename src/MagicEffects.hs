@@ -1,7 +1,7 @@
 module MagicEffects where
 
 import qualified Data.MultiSet as MultiSet
-import Control.Monad (mzero, msum, mplus, guard)
+import Control.Monad (mzero, msum, mplus, guard, when)
 import Control.Monad.State (modify, get, state)
 import System.Random.Shuffle (shuffleM)
 import System.Random (mkStdGen)
@@ -16,8 +16,9 @@ initGameState seed deck =
 
 nextStates :: GameState -> [GameState]
 nextStates gs@(GameState game _ _) = runEffect gs $
-  msum (map playCard (MultiSet.toList (hand game)))
-  `mplus` msum (map activatePermanent (MultiSet.toList (battlefield game)))
+  msum (map playCard (MultiSet.distinctElems (hand game)))
+  `mplus`
+  msum (map activatePermanent (MultiSet.distinctElems (battlefield game)))
 
 activatePermanent :: Permanent -> Effect
 activatePermanent permanent =
@@ -81,9 +82,9 @@ resolveStack :: Effect
 resolveStack = do
   topOfStack <- popTheStack
   if isPermanentCard topOfStack
-    then putIntoPlay topOfStack
-    else do cardEffect topOfStack
-            putInGraveyard topOfStack
+  then putIntoPlay topOfStack
+  else do cardEffect topOfStack
+          putInGraveyard topOfStack
   where popTheStack :: EffectM Card
         popTheStack = state $ \g->
           let (top:restOfStack) = stack g
@@ -110,9 +111,6 @@ payCost manaCost = do
   case payMana manaCost currentMana of
     Just newPool -> modify (\g->g { manaPool = newPool })
     Nothing -> mzero
-
-doNothing :: Effect
-doNothing = return ()
 
 addToManaPool :: String -> Effect
 addToManaPool manaStr = modify $ \g->g {
@@ -143,6 +141,7 @@ shuffleLibrary = do
   newLibrary <- shuffleM oldLibrary
   modify (\g->g { library = newLibrary })
 
+-- TODO does not actually remove. use state for this.
 search :: (Game -> [a]) -> (a -> Bool) -> EffectM a
 search zone matching = do
   choices <- fmap zone get
@@ -151,6 +150,4 @@ search zone matching = do
 threshold :: Effect -> Effect
 threshold effect = do
   gy <- fmap graveyard get
-  if length gy >= 7
-  then effect
-  else doNothing
+  when (length gy >= 7) effect
