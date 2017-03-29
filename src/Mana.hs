@@ -39,7 +39,7 @@ readMana str =
        (AnyColor, length (filter (=='A') colorStr))]
 
 addMana :: Mana -> Mana -> Mana
-addMana m1 m2 = MultiSet.union m1 m2
+addMana = MultiSet.union
 
 -- This is complicated and will need to return many possibilities. I need
 -- to allow for demotion of colored mana to colorless mana.
