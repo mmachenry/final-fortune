@@ -7,12 +7,12 @@ import Mana
 -- with a name, mana cost, and effect from playing.
 spell :: CardType -> String -> String -> Effect -> Card
 spell t name costStr effect =
-  let cost = read costStr
+  let cost = readMana costStr
   in Card name (Mana.colors cost) [] [t] cost effect []
 
 artifactMana :: String -> String -> (Permanent -> Effect) -> Effect -> Card
 artifactMana name costStr cost effect =
-  Card name [] [] [Artifact] (read costStr) (return ()) [
+  Card name [] [] [Artifact] (readMana costStr) (return ()) [
     ActivatedAbility cost effect]
 
 isType :: CardType -> Card -> Bool

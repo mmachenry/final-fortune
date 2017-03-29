@@ -217,11 +217,12 @@ Storm Win Condition
 * Empty the Warrens
 * Aetherflux Reservoir
 
-Combo Win Condition
+Combos
 ----
 * Time Vault; Voltaic Key; Tezzeret the Seeker
 * Painter's Servant; Grind Stone
 * Helm of Obedience; Leyline of the Void
+* Auriok Salvagers; Black Lotus; Lion's Eye Diamond
 
 Other Win Condition
 ----
@@ -238,5 +239,3 @@ Bounce
 ----
 * Retract
 * Rebuild
-* Hurkyll's Recall
-

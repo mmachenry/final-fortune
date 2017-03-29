@@ -71,7 +71,10 @@ playCard card = do
   if isType Land card
   then do hasPlayedLand <- fmap playedLand get
           guard $ not hasPlayedLand
-          modify (\g->g { hand = MultiSet.delete card (hand g) })
+          modify $ \g->g {
+            hand = MultiSet.delete card (hand g),
+            playedLand = True
+            }
           putIntoPlay card
   else do payCost (cardCost card)
           modify $ \g->g {
@@ -119,7 +122,7 @@ payCost manaCost = do
 
 addToManaPool :: String -> Effect
 addToManaPool manaStr = modify $ \g->g {
-  manaPool = addMana (read manaStr) (manaPool g) }
+  manaPool = addMana (readMana manaStr) (manaPool g) }
 
 tap :: Permanent -> Effect
 tap permanent = do
@@ -156,3 +159,13 @@ threshold :: Effect -> Effect
 threshold effect = do
   gy <- fmap graveyard get
   when (length gy >= 7) effect
+
+metalCraft :: Effect -> Effect
+metalCraft effect = do
+  permanents <- fmap battlefield get
+  let num =
+        MultiSet.size
+          (MultiSet.filter (\p->isType Artifact (permanentCard p))
+                           permanents)
+  guard $ num >= 3
+  effect

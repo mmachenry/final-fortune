@@ -6,34 +6,16 @@
 module Mana where
 
 import Data.Char
-import Data.Maybe (catMaybes)
+import Data.MultiSet (MultiSet)
+import qualified Data.MultiSet as MultiSet
 
 data Color = White | Blue | Black | Red | Green
-  deriving (Eq)
+  deriving (Eq, Ord, Show)
 
--- TODO default ordering is not good. it should give an idea of how good this
--- state is.
-data Mana = Mana {
-  white :: Int,
-  blue :: Int,
-  black :: Int,
-  red :: Int,
-  green :: Int,
-  colorless :: Int,
-  anyColor :: Int
-  } deriving (Show, Eq, Ord)
+data ManaType = Colored Color | Phyrexian Color | Colorless | AnyColor
+  deriving (Eq, Ord, Show)
 
-{-
-instance Show Mana where
-    show mana =
-           (if colorless mana == 0 then "" else show (colorless mana))
-        ++ replicate (anyColor mana) 'A'
-        ++ replicate (white mana) 'W'
-        ++ replicate (blue mana) 'U'
-        ++ replicate (black mana) 'B'
-        ++ replicate (red mana) 'R'
-        ++ replicate (green mana) 'G'
--}
+type Mana = MultiSet ManaType
 
 -- TODO fix: make not and instance, but create a String -> Mana function
 -- symbols that must be read:
@@ -42,48 +24,45 @@ instance Show Mana where
 -- C, specifically colorless mana
 -- (u/p), phyrexian mana (can be paid with 2 life or the color)
 -- (r/g), multicolored mana (can be paid with either color)
-instance Read Mana where
-    readsPrec _ str =
-        let (colorlessStr, colorStr) = span isDigit str
-            mana = Mana (length (filter (=='W') colorStr))
-                        (length (filter (=='U') colorStr))
-                        (length (filter (=='B') colorStr))
-                        (length (filter (=='R') colorStr))
-                        (length (filter (=='G') colorStr))
-                        (if colorlessStr == "" then 0 else read colorlessStr)
-                        (length (filter (=='A') colorStr))
-        in [(mana,"")]
+readMana :: String -> Mana
+readMana str =
+  let (colorlessStr, colorStr) = span isDigit str
+  in MultiSet.fromOccurList $ filter (\(_,n)-> n > 0) $ [
+       (Colored White, length (filter (=='W') colorStr)),
+       (Colored Blue, length (filter (=='U') colorStr)),
+       (Colored Black, length (filter (=='B') colorStr)),
+       (Colored Red, length (filter (=='R') colorStr)),
+       (Colored Green, length (filter (=='G') colorStr)),
+       (Colorless, if colorlessStr == ""
+                   then 0
+                   else read colorlessStr),
+       (AnyColor, length (filter (=='A') colorStr))]
 
 addMana :: Mana -> Mana -> Mana
-addMana m1 m2 =
-    Mana (white m1 + white m2) (blue m1 + blue m2) (black m1 + black m2)
-         (red m1 + red m2) (green m1 + green m2) (colorless m1 + colorless m2)
-         (anyColor m1 + anyColor m2)
+addMana m1 m2 = MultiSet.union m1 m2
 
--- TODO this is not really implemented
+-- This is complicated and will need to return many possibilities. I need
+-- to allow for demotion of colored mana to colorless mana.
 payMana :: Mana -> Mana -> Maybe Mana
 payMana cost pool =
-  if anyColor pool - convertedManaCost cost >= 0
-  then Just $ pool {
-         anyColor = anyColor pool - convertedManaCost cost
-         }
-  else Nothing
+  let available = MultiSet.intersection cost pool
+      amountLeft = MultiSet.difference pool available
+      stillNeeded = MultiSet.difference cost available
+  in if convertedManaCost stillNeeded <= MultiSet.occur AnyColor amountLeft
+     then Just (MultiSet.difference amountLeft
+                 (MultiSet.fromOccurList
+                   [(AnyColor, convertedManaCost stillNeeded)]))
+     else Nothing
 
 convertedManaCost :: Mana -> Int
-convertedManaCost mana =
-      white mana + blue mana + black mana + red mana + green mana
-    + colorless mana + anyColor mana
+convertedManaCost = MultiSet.size
 
--- TODO code smell
 colors :: Mana -> [Color]
-colors mana = catMaybes [
-  if white mana > 0 then Just White else Nothing,
-  if blue mana > 0 then Just Blue else Nothing,
-  if black mana > 0 then Just Black else Nothing,
-  if red mana > 0 then Just Red else Nothing,
-  if green mana > 0 then Just Green else Nothing
-  ]
+colors = MultiSet.distinctElems . MultiSet.mapMaybe manaTypeColor
+  where manaTypeColor manaType = case manaType of
+          Colored c -> Just c
+          Phyrexian c -> Just c
+          _ -> Nothing
 
 emptyManaPool :: Mana
-emptyManaPool = Mana 0 0 0 0 0 0 0
-
+emptyManaPool = MultiSet.empty

@@ -33,8 +33,7 @@ bestFirstSearch 0 _ _ = Nothing
 bestFirstSearch depth seen states =
   if Set.null states
   then Nothing
-  else let best = Set.findMax states
-           rest = Set.deleteMax states
+  else let (best,rest) = Set.deleteFindMax states
        in if Set.member best seen
           then bestFirstSearch (depth-1) seen rest
           else if isWin (gameStateGame best)
@@ -49,8 +48,7 @@ bfs states = do
   print $ map (length . hand . gameStateGame) (Set.toList states)
   if Set.null states
   then return Nothing
-  else let best = Set.findMax states
-           rest = Set.deleteMax states
+  else let (best, rest) = Set.deleteFindMax states
        in do putStrLn $ ppGs (gameStateGame best)
              if isWin (gameStateGame best)
              then return (Just best)

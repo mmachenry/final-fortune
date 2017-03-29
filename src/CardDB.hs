@@ -36,7 +36,7 @@ cards = [
  , artifactMana "Lotus Petal" "0" tapSacrifice $ addToManaPool "A"
  , artifactMana "Lion's Eye Diamond" "0" 
      (\this->sacrifice this >> discardHand)
-     (addToManaPool (read "AAA")) 
+     (addToManaPool "AAA") 
  , artifactMana "Mox Pearl" "0" tap $ addToManaPool "W"
  , artifactMana "Mox Sapphire" "0" tap $ addToManaPool "U"
  , artifactMana "Mox Jet" "0" tap $ addToManaPool "B"
@@ -46,7 +46,8 @@ cards = [
  , artifactMana "Sol Ring" "1" tap $ addToManaPool "1"
  , artifactMana "Mana Vault" "1" tap $ addToManaPool "3"
  , artifactMana "Grim Monolith" "2" tap $ addToManaPool "3"
- -- , artifactMana "Mox Opal" 0 tap $ metalCraft (addToManaPool "A")
+ -- make legendary and respect legend rule
+ , artifactMana "Mox Opal" "0" tap $ metalCraft (addToManaPool "A")
  -- , artifactMana "Chrome Mox" 0 tap ...
  -- , artifactMana "Mox Diamond" 0 tap ...
 
@@ -74,6 +75,7 @@ cards = [
      sacrifice old
      new <- search library (isType Artifact)
      putIntoPlay new
+     shuffleLibrary
 
  ------------
  -- Fast mana
@@ -99,12 +101,15 @@ cards = [
  , spell Sorcery "Merchant Scroll" "1U" $ do
      card <- search library (\c->isType Instant c && isColor Blue c)
      putIntoHand card
+     shuffleLibrary
  , spell Sorcery "Demonic Tutor" "1B" $ do
      card <- search library (const True)
      putIntoHand card
+     shuffleLibrary
  , spell Sorcery "Rhystic Tutor" "2B" $ do
      card <- search library (const True)
      putIntoHand card
+     shuffleLibrary
  , spell Sorcery "Regrowth" "1G" $ do
      card <- search graveyard (const True)
      putIntoHand card
@@ -112,9 +117,9 @@ cards = [
  -------
  -- Land
  -------
- , Card "Gemstone Mine" [] [] [Land] (read "0") (return ()) [
+ , Card "Gemstone Mine" [] [] [Land] (readMana "0") (return ()) [
      ActivatedAbility tap (addToManaPool "A") ]
- , Card "Tolarian Academy" [] [Legendary] [Land] (read "0") (return ()) [
+ , Card "Tolarian Academy" [] [Legendary] [Land] (readMana "0") (return ()) [
      ActivatedAbility tap $ do
        artifacts <- fmap battlefield get
        let numArtifacts =
