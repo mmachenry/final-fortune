@@ -20,6 +20,7 @@ Graveyard
 * Ill-Gotten Gains
 * Past In Flames
 * Snapcaster Mage
+* Dread Return
 
 Draw (blue)
 ----
@@ -53,6 +54,8 @@ Draw (blue)
 * Dream Cache
 * Telling Time
 * Dig Through Time
+* Braingyser
+* Stroke of Genius
 
 Draw (black)
 ----
@@ -65,6 +68,8 @@ Draw (black)
 * Promise of Power
 * Reproccess
 * Dredge
+* Necropotence
+* Contract from Below (banned for ante)
 
 Other draw
 ----
@@ -74,6 +79,7 @@ Other draw
 * Diabolic Vision
 * Dream Salvage
 * Lich's Mirror
+* Library of Alexandria
 
 Spin
 ----
@@ -145,6 +151,7 @@ Card tricks
 Mana (land)
 ----
 * Tolarian Academy
+* Gaea's Cradle
 * Mishra's Factory
 * Bayou
 * Tropical Island
@@ -169,6 +176,8 @@ Mana (artifact)
 * Mana Vault
 * Grim Monolith
 * Candelabra of Tawnos
+* Mox Amber
+* Mox Jasper
 
 Mana (other)
 ----
@@ -178,6 +187,7 @@ Mana (other)
 * Tinder Wall
 * Fastbond
 * Cadaverous Bloom
+* An Offer You Can't Refuse
 
 Mana (black fast mana)
 * Dark Ritual
@@ -198,6 +208,9 @@ Avoiding casting costs
 * Show and Tell
 * Dream Halls
 * Omniscience
+* Flash (w/ Protean Hulk for example)
+* Sneak Attack
+* Omniscience
 
 Reducing casting costs
 ----
@@ -205,9 +218,16 @@ Reducing casting costs
 * Cloud Key
 * Semblance Anvil
 
+Play top of library
+---
+* Future Sight
+* Magus of the Future
+* Bolas's Citadel
+
 Untapping
 ----
 * Paradox Engine
+* Mind Over Matter
  
 Storm Win Condition
 ----
@@ -223,11 +243,13 @@ Combos
 * Painter's Servant; Grind Stone
 * Helm of Obedience; Leyline of the Void
 * Auriok Salvagers; Black Lotus; Lion's Eye Diamond
+* Animate Dead; Worldgorger Dragon
 
 Other Win Condition
 ----
 * Laboratory Maniac
 * Goblin Charbelcher
+* Thassa's Oracle
 
 Mana fixing
 ----
@@ -239,3 +261,7 @@ Bounce
 ----
 * Retract
 * Rebuild
+
+Free to cast
+---
+* Creeping Chill
